@@ -1,5 +1,6 @@
 import 'package:evana_event_management_app/Views/Authentication/LoginPage/login_page.dart';
 import 'package:evana_event_management_app/Views/Authentication/RegisterPage/register_page.dart';
+import 'package:evana_event_management_app/Views/EventDetailsPage/event_details_page.dart';
 import 'package:evana_event_management_app/Views/HomePage/home_page.dart';
 import 'package:evana_event_management_app/Views/SplashScreen/splash_screen.dart';
 import 'package:get/get.dart';
@@ -9,6 +10,7 @@ class Routes {
   static const String login = '/login';
   static const String register = '/register';
   static const String home = '/home';
+  static const String detailPage = '/detailPage';
 
   static List<GetPage> routes = [
     GetPage(
@@ -29,6 +31,11 @@ class Routes {
     GetPage(
       name: home,
       page: () => const HomePage(),
+      transition: Transition.fadeIn,
+    ),
+    GetPage(
+      name: detailPage,
+      page: () => const EventDetailsPage(),
       transition: Transition.fadeIn,
     ),
   ];
