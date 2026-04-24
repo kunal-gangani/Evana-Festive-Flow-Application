@@ -10,8 +10,7 @@ class LoginPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final Color gold = const Color(0xFFD4AF37);
     final Color goldAccent = const Color(0xFFF9D423);
-    final Color textFieldFill =
-        const Color(0x0DFFFFFF); // ~5% white with opacity
+    final Color textFieldFill = const Color(0x0DFFFFFF);
 
     return Scaffold(
       backgroundColor: Colors.black,
@@ -30,8 +29,6 @@ class LoginPage extends StatelessWidget {
               ),
             ),
           ),
-
-          // Content
           Center(
             child: SingleChildScrollView(
               padding: const EdgeInsets.symmetric(horizontal: 24.0),
@@ -47,8 +44,6 @@ class LoginPage extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 20),
-
-                  // Welcome
                   Text(
                     "Welcome Back",
                     style: TextStyle(
@@ -58,7 +53,7 @@ class LoginPage extends StatelessWidget {
                       letterSpacing: 1.2,
                       shadows: [
                         Shadow(
-                          color: gold.withAlpha(100), // translucent shadow
+                          color: gold.withAlpha(100),
                           blurRadius: 12,
                         ),
                       ],
@@ -74,8 +69,6 @@ class LoginPage extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 40),
-
-                  // Email Field
                   _buildTextField(
                     label: 'Email',
                     icon: Icons.email_outlined,
@@ -84,8 +77,6 @@ class LoginPage extends StatelessWidget {
                     fillColor: textFieldFill,
                   ),
                   const SizedBox(height: 20),
-
-                  // Password Field
                   _buildTextField(
                     label: 'Password',
                     icon: Icons.lock_outline,
@@ -101,7 +92,6 @@ class LoginPage extends StatelessWidget {
                   SizedBox(
                     height: 20.h,
                   ),
-
                   Align(
                     alignment: Alignment.centerRight,
                     child: TextButton(
@@ -260,7 +250,10 @@ Widget _buildLoginButton(Color gold, Color goldAccent) {
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: const [
-            Icon(Icons.lock_open, color: Colors.black87),
+            Icon(
+              Icons.lock_open,
+              color: Colors.black87,
+            ),
             SizedBox(width: 10),
             Text(
               'LOGIN',
