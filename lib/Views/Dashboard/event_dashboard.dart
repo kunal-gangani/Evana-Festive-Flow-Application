@@ -2,7 +2,10 @@ import 'package:evana_event_management_app/Controllers/booking_provider.dart';
 import 'package:evana_event_management_app/Controllers/event_provider.dart';
 import 'package:evana_event_management_app/Helpers/app_theme.dart';
 import 'package:evana_event_management_app/Models/event_model.dart';
+import 'package:evana_event_management_app/Services/storage_service.dart';
+import 'package:evana_event_management_app/Services/validation_service.dart';
 import 'package:evana_event_management_app/Views/Dashboard/widgets/event_card.dart';
+import 'package:evana_event_management_app/Views/Scanner/scanner_view.dart';
 import 'package:evana_event_management_app/Views/Tickets/ticket_wallet.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -17,6 +20,21 @@ class EventDashboard extends StatelessWidget {
       appBar: AppBar(
         title: const Text('Event Discovery'),
         actions: [
+          IconButton(
+            tooltip: 'Organizer Mode',
+            onPressed: () {
+              Navigator.of(context).push(
+                MaterialPageRoute<void>(
+                  builder: (_) => ScannerView(
+                    validationService: ValidationService(
+                      storageService: StorageService.instance,
+                    ),
+                  ),
+                ),
+              );
+            },
+            icon: const Icon(Icons.qr_code_scanner_rounded),
+          ),
           IconButton(
             onPressed: () {
               Navigator.of(context).push(

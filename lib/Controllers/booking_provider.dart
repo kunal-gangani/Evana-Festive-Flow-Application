@@ -9,24 +9,60 @@ import 'event_provider.dart';
 class BookingProvider extends ChangeNotifier {
   BookingProvider({
     required BookingService bookingService,
-  }) : _bookingService = bookingService;
+  }) : _bookingService = bookingService {
+    hydrate();
+  }
 
   final BookingService _bookingService;
 
   List<TicketModel> _userTickets = const [];
   bool _isBooking = false;
+  bool _isHydrating = false;
   String? _error;
   bool _isDisposed = false;
+  Future<void>? _hydrationFuture;
 
   List<TicketModel> get userTickets => _userTickets;
   bool get isBooking => _isBooking;
+  bool get isHydrating => _isHydrating;
   String? get error => _error;
+  int get totalScanned => _userTickets.where((ticket) => ticket.isScanned).length;
+  int get totalTickets => _userTickets.length;
+  double get checkInProgress =>
+      totalTickets == 0 ? 0.0 : totalScanned / totalTickets;
+
+  Future<void> hydrate() {
+    return _hydrationFuture ??= _hydrateInternal();
+  }
+
+  Future<void> _hydrateInternal() async {
+    try {
+      _isHydrating = true;
+      _error = null;
+      _safeNotifyListeners();
+
+      final persistedTickets = await _bookingService.getPersistedTickets();
+      if (_isDisposed) {
+        return;
+      }
+
+      _userTickets = persistedTickets;
+    } on AppException catch (error) {
+      _error = error.message;
+    } catch (_) {
+      _error = 'Unable to restore your tickets right now.';
+    } finally {
+      _isHydrating = false;
+      _safeNotifyListeners();
+    }
+  }
 
   Future<TicketModel?> handleBooking(
     EventModel event,
     EventProvider eventProvider,
   ) async {
     try {
+      await hydrate();
       _error = null;
 
       if (event.isFull) {
@@ -64,6 +100,35 @@ class BookingProvider extends ChangeNotifier {
   void clearError() {
     _error = null;
     _safeNotifyListeners();
+  }
+
+  Future<TicketModel?> markTicketAsScanned(TicketModel ticket) async {
+    try {
+      _error = null;
+
+      final updatedTicket = await _bookingService.markTicketAsScanned(ticket);
+      if (_isDisposed) {
+        return null;
+      }
+
+      _userTickets = _userTickets
+          .map(
+            (existingTicket) => existingTicket.secureHash == ticket.secureHash
+                ? updatedTicket
+                : existingTicket,
+          )
+          .toList();
+      _safeNotifyListeners();
+      return updatedTicket;
+    } on AppException catch (error) {
+      _error = error.message;
+      _safeNotifyListeners();
+      return null;
+    } catch (_) {
+      _error = 'Unable to update the scanned ticket.';
+      _safeNotifyListeners();
+      return null;
+    }
   }
 
   void _safeNotifyListeners() {

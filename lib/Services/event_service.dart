@@ -1,7 +1,54 @@
 import 'package:evana_event_management_app/Helpers/app_exception.dart';
 import 'package:evana_event_management_app/Models/event_model.dart';
+import 'package:evana_event_management_app/Models/ticket_model.dart';
+import 'package:evana_event_management_app/Services/storage_service.dart';
 
 class EventService {
+  EventService({
+    StorageService? storageService,
+  }) : _storageService = storageService;
+
+  static const String _futureStackEventId = 'evt-002';
+  static const String _futureStackTitle = 'FutureStack Summit';
+
+  final StorageService? _storageService;
+
+  Future<void> seedFutureStackTickets() async {
+    if (_storageService == null) {
+      return;
+    }
+
+    try {
+      final existingTickets = await _storageService.getTickets();
+      final futureStackTickets = existingTickets
+          .where((ticket) => ticket.eventId == _futureStackEventId)
+          .length;
+
+      if (futureStackTickets >= 5) {
+        return;
+      }
+
+      final ticketsToSeed = 5 - futureStackTickets;
+      for (var index = 0; index < ticketsToSeed; index++) {
+        final purchaseDate = DateTime.utc(2026, 5, 5, 9, index);
+        final seedTicket = TicketModel(
+          ticketId: 'TKT-$_futureStackEventId-seed-${futureStackTickets + index + 1}',
+          eventId: _futureStackEventId,
+          userId: 'seed-user-${futureStackTickets + index + 1}',
+          purchaseDate: purchaseDate,
+          isScanned: false,
+          eventTitle: _futureStackTitle,
+          eventDate: DateTime(2026, 5, 6, 10, 0),
+        );
+        await _storageService.saveTicket(seedTicket);
+      }
+    } on AppException {
+      rethrow;
+    } catch (_) {
+      throw AppException('Unable to seed FutureStack tickets right now.');
+    }
+  }
+
   Future<List<EventModel>> getEvents() async {
     try {
       return await Future<List<EventModel>>.delayed(

@@ -24,8 +24,55 @@ class TicketModel {
   final DateTime eventDate;
 
   String get secureHash {
-    final raw = '$ticketId$userId$eventId';
+    return generateSecureHash(
+      eventId: eventId,
+      userId: userId,
+      purchaseDate: purchaseDate,
+    );
+  }
+
+  String get qrPayload {
+    return jsonEncode(<String, dynamic>{
+      'ticketId': ticketId,
+      'eventId': eventId,
+      'userId': userId,
+      'purchaseDate': purchaseDate.toIso8601String(),
+      'hash': secureHash,
+      'isScanned': isScanned,
+    });
+  }
+
+  static String generateSecureHash({
+    required String eventId,
+    required String userId,
+    required DateTime purchaseDate,
+  }) {
+    final raw = '$eventId|$userId|${purchaseDate.toIso8601String()}';
     return sha256.convert(utf8.encode(raw)).toString();
+  }
+
+  Map<String, dynamic> toMap() {
+    return <String, dynamic>{
+      'ticketId': ticketId,
+      'eventId': eventId,
+      'userId': userId,
+      'purchaseDate': purchaseDate.toIso8601String(),
+      'isScanned': isScanned,
+      'eventTitle': eventTitle,
+      'eventDate': eventDate.toIso8601String(),
+    };
+  }
+
+  factory TicketModel.fromMap(Map<dynamic, dynamic> map) {
+    return TicketModel(
+      ticketId: map['ticketId'] as String,
+      eventId: map['eventId'] as String,
+      userId: map['userId'] as String,
+      purchaseDate: DateTime.parse(map['purchaseDate'] as String),
+      isScanned: map['isScanned'] as bool,
+      eventTitle: map['eventTitle'] as String,
+      eventDate: DateTime.parse(map['eventDate'] as String),
+    );
   }
 
   TicketModel copyWith({

@@ -75,7 +75,7 @@ class TicketDetailView extends StatelessWidget {
                         ),
                         child: Center(
                           child: QrImageView(
-                            data: ticket.secureHash,
+                            data: ticket.qrPayload,
                             size: 220,
                             eyeStyle: const QrEyeStyle(
                               eyeShape: QrEyeShape.square,
@@ -117,7 +117,7 @@ class TicketDetailView extends StatelessWidget {
               ),
               const SizedBox(height: 18),
               Text(
-                'This QR contains a secure SHA-256 token derived from your ticket, user, and event IDs.',
+                'This QR contains signed ticket data with a SHA-256 verification token for organizer-side entry checks.',
                 textAlign: TextAlign.center,
                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                       color: Colors.white70,
