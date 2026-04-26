@@ -52,6 +52,31 @@ void main() {
     expect(result.status, ValidationStatus.invalid);
   });
 
+  test('rejects tampered payloads when ticketId changes without a new hash',
+      () async {
+    final ticket = TicketModel(
+      ticketId: 'TKT-SEC-003',
+      eventId: 'evt-003',
+      userId: 'user-017',
+      purchaseDate: DateTime.utc(2026, 5, 9, 6, 45),
+      isScanned: false,
+      eventTitle: 'Designing With Light Workshop',
+      eventDate: DateTime.utc(2026, 5, 9, 14, 0),
+    );
+
+    await StorageService.instance.saveTicket(ticket);
+
+    final tamperedPayload = Map<String, dynamic>.from(
+      jsonDecode(ticket.qrPayload) as Map,
+    )..['ticketId'] = 'TKT-SEC-003-TAMPERED';
+
+    final result = await validationService.validateRawQr(
+      jsonEncode(tamperedPayload),
+    );
+
+    expect(result.status, ValidationStatus.invalid);
+  });
+
   test('returns alreadyScanned after organizer flow scans the same QR twice',
       () async {
     final ticket = TicketModel(

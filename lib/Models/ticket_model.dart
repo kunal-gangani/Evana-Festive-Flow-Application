@@ -25,6 +25,7 @@ class TicketModel {
 
   String get secureHash {
     return generateSecureHash(
+      ticketId: ticketId,
       eventId: eventId,
       userId: userId,
       purchaseDate: purchaseDate,
@@ -43,11 +44,13 @@ class TicketModel {
   }
 
   static String generateSecureHash({
+    required String ticketId,
     required String eventId,
     required String userId,
     required DateTime purchaseDate,
   }) {
-    final raw = '$eventId|$userId|${purchaseDate.toIso8601String()}';
+    final raw =
+        '$ticketId|$eventId|$userId|${purchaseDate.toIso8601String()}';
     return sha256.convert(utf8.encode(raw)).toString();
   }
 

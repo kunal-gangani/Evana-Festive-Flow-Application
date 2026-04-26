@@ -41,13 +41,15 @@ class ValidationService {
       }
 
       final payload = Map<String, dynamic>.from(decoded);
+      final ticketId = payload['ticketId'] as String?;
       final eventId = payload['eventId'] as String?;
       final userId = payload['userId'] as String?;
       final purchaseDateRaw = payload['purchaseDate'] as String?;
       final providedHash = payload['hash'] as String?;
       final isScanned = payload['isScanned'] as bool?;
 
-      if (eventId == null ||
+      if (ticketId == null ||
+          eventId == null ||
           userId == null ||
           purchaseDateRaw == null ||
           providedHash == null ||
@@ -67,6 +69,7 @@ class ValidationService {
       }
 
       final recalculatedHash = TicketModel.generateSecureHash(
+        ticketId: ticketId,
         eventId: eventId,
         userId: userId,
         purchaseDate: purchaseDate,
@@ -87,7 +90,8 @@ class ValidationService {
         );
       }
 
-      final matchesStoredTicket = storedTicket.eventId == eventId &&
+      final matchesStoredTicket = storedTicket.ticketId == ticketId &&
+          storedTicket.eventId == eventId &&
           storedTicket.userId == userId &&
           storedTicket.purchaseDate.toIso8601String() ==
               purchaseDate.toIso8601String();
