@@ -1,3 +1,6 @@
+import 'package:evana_event_management_app/Services/storage_service.dart';
+import 'package:evana_event_management_app/Services/validation_service.dart';
+import 'package:evana_event_management_app/Views/Scanner/scanner_view.dart';
 import 'package:flutter/material.dart';
 
 class OrgQRScannerPage extends StatelessWidget {
@@ -5,6 +8,10 @@ class OrgQRScannerPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Placeholder();
+    return ScannerView(
+      validationService: ValidationService(
+        storageService: StorageService.instance,
+      ),
+    );
   }
 }

@@ -1,11 +1,12 @@
 import 'package:evana_event_management_app/Controllers/booking_provider.dart';
 import 'package:evana_event_management_app/Controllers/event_provider.dart';
 import 'package:evana_event_management_app/Helpers/app_theme.dart';
+import 'package:evana_event_management_app/Routes/routes.dart';
 import 'package:evana_event_management_app/Services/booking_service.dart';
 import 'package:evana_event_management_app/Services/event_service.dart';
 import 'package:evana_event_management_app/Services/storage_service.dart';
-import 'package:evana_event_management_app/Views/SplashScreen/splash_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 
 Future<void> main() async {
@@ -51,10 +52,11 @@ class EvanaApp extends StatelessWidget {
           ),
         ),
       ],
-      child: MaterialApp(
+      child: GetMaterialApp(
         debugShowCheckedModeBanner: false,
         theme: AppTheme.darkTheme,
-        home: const SplashScreen(),
+        initialRoute: Routes.splash,
+        getPages: Routes.routes,
       ),
     );
   }

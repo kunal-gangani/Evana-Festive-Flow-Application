@@ -1,7 +1,7 @@
 import 'package:evana_event_management_app/Views/Authentication/LoginPage/login_page.dart';
 import 'package:evana_event_management_app/Views/Authentication/RegisterPage/register_page.dart';
+import 'package:evana_event_management_app/Views/Dashboard/event_dashboard.dart';
 import 'package:evana_event_management_app/Views/EventDetailsPage/event_details_page.dart';
-import 'package:evana_event_management_app/Views/HomePage/home_page.dart';
 import 'package:evana_event_management_app/Views/SplashScreen/splash_screen.dart';
 import 'package:get/get.dart';
 
@@ -30,7 +30,7 @@ class Routes {
     ),
     GetPage(
       name: home,
-      page: () => const HomePage(),
+      page: () => const EventDashboard(),
       transition: Transition.fadeIn,
     ),
     GetPage(

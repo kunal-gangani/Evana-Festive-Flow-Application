@@ -1,9 +1,9 @@
-import 'dart:math' as math;
 import 'package:evana_event_management_app/Controllers/splash_view_model.dart';
 import 'package:evana_event_management_app/Helpers/app_theme.dart';
-import 'package:evana_event_management_app/Views/Dashboard/event_dashboard.dart';
 import 'package:evana_event_management_app/Views/SplashScreen/festive_logo.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -13,45 +13,8 @@ class SplashScreen extends StatefulWidget {
   State<SplashScreen> createState() => _SplashScreenState();
 }
 
-class _SplashScreenState extends State<SplashScreen>
-    with SingleTickerProviderStateMixin {
-  late final AnimationController _controller;
-  late final Animation<double> _fadeAnimation;
-  late final Animation<double> _scaleAnimation;
-  late final Animation<double> _rotationAnimation;
+class _SplashScreenState extends State<SplashScreen> {
   bool _hasStarted = false;
-
-  @override
-  void initState() {
-    super.initState();
-    _controller = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 1600),
-    );
-    _fadeAnimation = CurvedAnimation(
-      parent: _controller,
-      curve: Curves.easeOut,
-    );
-    _scaleAnimation = Tween<double>(
-      begin: 0.82,
-      end: 1,
-    ).animate(
-      CurvedAnimation(parent: _controller, curve: Curves.easeOutBack),
-    );
-    _rotationAnimation = Tween<double>(
-      begin: -5 * math.pi / 180,
-      end: 0,
-    ).animate(
-      CurvedAnimation(parent: _controller, curve: Curves.easeOutCubic),
-    );
-    _controller.forward();
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
 
   void _startNavigation(SplashViewModel viewModel) {
     if (_hasStarted) {
@@ -60,16 +23,11 @@ class _SplashScreenState extends State<SplashScreen>
 
     _hasStarted = true;
     viewModel.start(
+      delay: const Duration(seconds: 3),
       onNavigate: () {
-        if (!mounted) {
-          return;
+        if (mounted) {
+          Get.offAllNamed('/home');
         }
-
-        Navigator.of(context).pushReplacement(
-          MaterialPageRoute<void>(
-            builder: (_) => const EventDashboard(),
-          ),
-        );
       },
     );
   }
@@ -106,55 +64,60 @@ class _SplashScreenState extends State<SplashScreen>
               ),
               child: SafeArea(
                 child: Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      AnimatedBuilder(
-                        animation: _controller,
-                        builder: (context, child) {
-                          return Opacity(
-                            opacity: _fadeAnimation.value,
-                            child: Transform.rotate(
-                              angle: _rotationAnimation.value,
-                              child: Transform.scale(
-                                scale: _scaleAnimation.value,
-                                child: child,
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 24),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        SizedBox(
+                          width: 260,
+                          height: 260,
+                          child: Stack(
+                            alignment: Alignment.center,
+                            children: [
+                              Lottie.asset(
+                                'assets/animations/act_vi_launch.json',
+                                repeat: true,
+                                fit: BoxFit.contain,
                               ),
-                            ),
-                          );
-                        },
-                        child: const FestiveLogo(size: 170),
-                      ),
-                      const SizedBox(height: 28),
-                      Text(
-                        'Evana Festive Flow',
-                        style:
-                            Theme.of(context).textTheme.headlineSmall?.copyWith(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.w700,
-                                  letterSpacing: 0.4,
+                              Container(
+                                width: 82,
+                                height: 82,
+                                decoration: BoxDecoration(
+                                  color: Colors.white.withValues(alpha: 0.06),
+                                  shape: BoxShape.circle,
+                                  border: Border.all(
+                                    color: Colors.white.withValues(alpha: 0.12),
+                                  ),
                                 ),
-                      ),
-                      const SizedBox(height: 10),
-                      Text(
-                        'Celebrate every event with premium flow.',
-                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                              color: Colors.white70,
-                            ),
-                        textAlign: TextAlign.center,
-                      ),
-                      const SizedBox(height: 36),
-                      const SizedBox(
-                        width: 28,
-                        height: 28,
-                        child: CircularProgressIndicator(
-                          strokeWidth: 2.4,
-                          valueColor: AlwaysStoppedAnimation<Color>(
-                            AppTheme.accentAmber,
+                                child: const Center(
+                                  child: FestiveLogo(size: 54),
+                                ),
+                              ),
+                            ],
                           ),
                         ),
-                      ),
-                    ],
+                        const SizedBox(height: 24),
+                        Text(
+                          'Evana Festive Flow',
+                          style:
+                              Theme.of(context).textTheme.headlineSmall?.copyWith(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.w700,
+                                    letterSpacing: 0.4,
+                                  ),
+                        ),
+                        const SizedBox(height: 10),
+                        Text(
+                          'Act VI is live: secure tickets, polished scans, and a launch that feels like a live show.',
+                          textAlign: TextAlign.center,
+                          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                color: Colors.white70,
+                                height: 1.5,
+                              ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),

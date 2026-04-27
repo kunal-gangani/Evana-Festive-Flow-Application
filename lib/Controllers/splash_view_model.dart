@@ -10,7 +10,7 @@ class SplashViewModel extends ChangeNotifier {
 
   void start({
     required VoidCallback onNavigate,
-    Duration delay = const Duration(milliseconds: 2500),
+    Duration delay = const Duration(seconds: 3),
   }) {
     _navigationTimer?.cancel();
     _error = null;

@@ -2,13 +2,12 @@ import 'package:evana_event_management_app/Controllers/booking_provider.dart';
 import 'package:evana_event_management_app/Controllers/event_provider.dart';
 import 'package:evana_event_management_app/Helpers/app_theme.dart';
 import 'package:evana_event_management_app/Models/event_model.dart';
-import 'package:evana_event_management_app/Services/storage_service.dart';
-import 'package:evana_event_management_app/Services/validation_service.dart';
 import 'package:evana_event_management_app/Views/Dashboard/widgets/event_card.dart';
-import 'package:evana_event_management_app/Views/Scanner/scanner_view.dart';
-import 'package:evana_event_management_app/Views/Tickets/ticket_wallet.dart';
+import 'package:evana_event_management_app/Views/OrganizersView/OrganizerDashBoardPage/organizer_dashboard_page.dart';
+import 'package:evana_event_management_app/Views/TicketWalletPage/ticket_wallet_page.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shimmer/shimmer.dart';
 
 class EventDashboard extends StatelessWidget {
   const EventDashboard({super.key});
@@ -25,11 +24,7 @@ class EventDashboard extends StatelessWidget {
             onPressed: () {
               Navigator.of(context).push(
                 MaterialPageRoute<void>(
-                  builder: (_) => ScannerView(
-                    validationService: ValidationService(
-                      storageService: StorageService.instance,
-                    ),
-                  ),
+                  builder: (_) => const OrganizerDashboardPage(),
                 ),
               );
             },
@@ -39,7 +34,7 @@ class EventDashboard extends StatelessWidget {
             onPressed: () {
               Navigator.of(context).push(
                 MaterialPageRoute<void>(
-                  builder: (_) => const TicketWallet(),
+                  builder: (_) => const TicketWalletPage(),
                 ),
               );
             },
@@ -312,82 +307,46 @@ class _EmptyState extends StatelessWidget {
   }
 }
 
-class _DashboardShimmer extends StatefulWidget {
+class _DashboardShimmer extends StatelessWidget {
   const _DashboardShimmer();
 
   @override
-  State<_DashboardShimmer> createState() => _DashboardShimmerState();
-}
-
-class _DashboardShimmerState extends State<_DashboardShimmer>
-    with SingleTickerProviderStateMixin {
-  late final AnimationController _controller;
-
-  @override
-  void initState() {
-    super.initState();
-    _controller = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 1100),
-    )..repeat();
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
-    return AnimatedBuilder(
-      animation: _controller,
-      builder: (context, _) {
-        return ListView(
-          padding: const EdgeInsets.fromLTRB(20, 16, 20, 24),
-          children: [
-            _ShimmerBlock(
-              animationValue: _controller.value,
-              height: 28,
-              widthFactor: 0.54,
-            ),
-            const SizedBox(height: 12),
-            _ShimmerBlock(
-              animationValue: _controller.value,
-              height: 14,
-              widthFactor: 0.82,
-            ),
-            const SizedBox(height: 22),
-            Row(
-              children: List.generate(
-                4,
-                (index) => Padding(
-                  padding: const EdgeInsets.only(right: 10),
-                  child: _ShimmerPill(animationValue: _controller.value),
-                ),
+    return Shimmer.fromColors(
+      baseColor: const Color(0xFF121830),
+      highlightColor: const Color(0xFF20284A),
+      child: ListView(
+        padding: const EdgeInsets.fromLTRB(20, 16, 20, 24),
+        children: [
+          const _ShimmerBlock(height: 28, widthFactor: 0.54),
+          const SizedBox(height: 12),
+          const _ShimmerBlock(height: 14, widthFactor: 0.82),
+          const SizedBox(height: 22),
+          Row(
+            children: List.generate(
+              4,
+              (index) => const Padding(
+                padding: EdgeInsets.only(right: 10),
+                child: _ShimmerPill(),
               ),
             ),
-            const SizedBox(height: 22),
-            ...List.generate(
-              3,
-              (_) => Padding(
-                padding: const EdgeInsets.only(bottom: 18),
-                child: _ShimmerCard(animationValue: _controller.value),
-              ),
+          ),
+          const SizedBox(height: 22),
+          ...List.generate(
+            3,
+            (_) => const Padding(
+              padding: EdgeInsets.only(bottom: 18),
+              child: _ShimmerCard(),
             ),
-          ],
-        );
-      },
+          ),
+        ],
+      ),
     );
   }
 }
 
 class _ShimmerCard extends StatelessWidget {
-  const _ShimmerCard({
-    required this.animationValue,
-  });
-
-  final double animationValue;
+  const _ShimmerCard();
 
   @override
   Widget build(BuildContext context) {
@@ -395,26 +354,14 @@ class _ShimmerCard extends StatelessWidget {
       height: 280,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(24),
-        gradient: LinearGradient(
-          begin: Alignment(-1 + (animationValue * 2), 0),
-          end: Alignment(1 + (animationValue * 2), 0),
-          colors: const [
-            Color(0xFF121830),
-            Color(0xFF20284A),
-            Color(0xFF121830),
-          ],
-        ),
+        color: const Color(0xFF171D39),
       ),
     );
   }
 }
 
 class _ShimmerPill extends StatelessWidget {
-  const _ShimmerPill({
-    required this.animationValue,
-  });
-
-  final double animationValue;
+  const _ShimmerPill();
 
   @override
   Widget build(BuildContext context) {
@@ -423,15 +370,7 @@ class _ShimmerPill extends StatelessWidget {
       height: 42,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(999),
-        gradient: LinearGradient(
-          begin: Alignment(-1 + (animationValue * 2), 0),
-          end: Alignment(1 + (animationValue * 2), 0),
-          colors: const [
-            Color(0xFF121830),
-            Color(0xFF20284A),
-            Color(0xFF121830),
-          ],
-        ),
+        color: const Color(0xFF171D39),
       ),
     );
   }
@@ -439,12 +378,10 @@ class _ShimmerPill extends StatelessWidget {
 
 class _ShimmerBlock extends StatelessWidget {
   const _ShimmerBlock({
-    required this.animationValue,
     required this.height,
     required this.widthFactor,
   });
 
-  final double animationValue;
   final double height;
   final double widthFactor;
 
@@ -457,15 +394,7 @@ class _ShimmerBlock extends StatelessWidget {
         height: height,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(12),
-          gradient: LinearGradient(
-            begin: Alignment(-1 + (animationValue * 2), 0),
-            end: Alignment(1 + (animationValue * 2), 0),
-            colors: const [
-              Color(0xFF121830),
-              Color(0xFF20284A),
-              Color(0xFF121830),
-            ],
-          ),
+          color: const Color(0xFF171D39),
         ),
       ),
     );

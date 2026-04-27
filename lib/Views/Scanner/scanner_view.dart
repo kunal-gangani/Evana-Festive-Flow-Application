@@ -29,6 +29,18 @@ class _ScannerViewState extends State<ScannerView> {
   bool _showSuccessOverlay = false;
   String _successMessage = 'Access granted. Ticket verified successfully.';
 
+  Future<void> _playSuccessHaptics() async {
+    await HapticFeedback.mediumImpact();
+    await Future<void>.delayed(const Duration(milliseconds: 50));
+    await HapticFeedback.mediumImpact();
+    await Future<void>.delayed(const Duration(milliseconds: 50));
+    await HapticFeedback.mediumImpact();
+  }
+
+  Future<void> _playFailureHaptics() {
+    return HapticFeedback.vibrate();
+  }
+
   @override
   void dispose() {
     _scannerController.dispose();
@@ -65,7 +77,7 @@ class _ScannerViewState extends State<ScannerView> {
       }
 
       if (updatedTicket == null) {
-        await HapticFeedback.vibrate();
+        await _playFailureHaptics();
         await _showResultDialog(
           title: 'Security Alert',
           message:
@@ -74,11 +86,11 @@ class _ScannerViewState extends State<ScannerView> {
           icon: Icons.warning_rounded,
         );
       } else {
-        await HapticFeedback.heavyImpact();
+        await _playSuccessHaptics();
         await _showSuccessOverlayBanner(result.message);
       }
     } else if (result.status == ValidationStatus.alreadyScanned) {
-      await HapticFeedback.vibrate();
+      await _playFailureHaptics();
       await _showResultDialog(
         title: 'Already Checked In',
         message: result.message,
@@ -86,7 +98,7 @@ class _ScannerViewState extends State<ScannerView> {
         icon: Icons.block_rounded,
       );
     } else {
-      await HapticFeedback.vibrate();
+      await _playFailureHaptics();
       await _showResultDialog(
         title: 'Security Alert',
         message: result.message,

@@ -1,3 +1,4 @@
+import 'package:evana_event_management_app/Helpers/app_theme.dart';
 import 'package:evana_event_management_app/Routes/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -16,6 +17,8 @@ class MyApp extends StatelessWidget {
       builder: (context, _) {
         return GetMaterialApp(
           getPages: Routes.routes,
+          initialRoute: Routes.splash,
+          theme: AppTheme.darkTheme,
           debugShowCheckedModeBanner: false,
         );
       },

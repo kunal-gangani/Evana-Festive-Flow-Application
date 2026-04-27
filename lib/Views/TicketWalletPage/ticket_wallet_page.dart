@@ -1,3 +1,4 @@
+import 'package:evana_event_management_app/Views/Tickets/ticket_wallet.dart';
 import 'package:flutter/material.dart';
 
 class TicketWalletPage extends StatelessWidget {
@@ -5,6 +6,6 @@ class TicketWalletPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Placeholder();
+    return const TicketWallet();
   }
 }

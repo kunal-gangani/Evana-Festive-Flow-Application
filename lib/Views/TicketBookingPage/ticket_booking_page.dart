@@ -1,3 +1,4 @@
+import 'package:evana_event_management_app/Views/Dashboard/event_dashboard.dart';
 import 'package:flutter/material.dart';
 
 class TicketBookingPage extends StatelessWidget {
@@ -5,6 +6,6 @@ class TicketBookingPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Placeholder();
+    return const EventDashboard();
   }
 }
